@@ -10,15 +10,23 @@ async function messageChildren(client, message) {
     try {
         const childrenSchema = await children.find();
 
-        for (const child of childrenSchema) {
-            if (!child.complete && child._id) {
-                try {
-                    const clientUser = await client.users.fetch(child._id.toString());
-                    await clientUser.send(message);
-                } catch (err) {
-                    console.error(`Failed to notify user ${child.name}:`, err);
+        if (childrenSchema.length === 0) {
+            console.log('No reminders sent because there are no children');
+        }
+        else {
+            var count = 0;
+            for (const child of childrenSchema) {
+                if (!child.complete && child._id) {
+                    try {
+                        const childUser = await client.users.fetch(child._id.toString());
+                        await childUser.send(message);
+                        count++;
+                    } catch (err) {
+                        console.error(`Failed to notify user ${child.name}:`, err);
+                    }
                 }
             }
+            console.log(count + ' reminders sent')
         }
     } catch (err) {
         console.error('Failed to fetch children from DB:', err);
@@ -30,7 +38,7 @@ module.exports = {
     once: true,
     async execute(client) {
         client.user.setActivity({
-            name: "Grazing 🌿",
+            name: 'Grazing 🌿',
             type: ActivityType.Custom
         });
         console.log('The cow has awoken');
