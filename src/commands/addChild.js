@@ -23,7 +23,7 @@ module.exports = {
                 name: childName,
                 complete: false
             });
-            await interaction.reply(`:white_check_mark::cow2::white_check_mark: ${childName} will now be watched by the Chore Cow`);
+            await interaction.reply(`${childName} will now be watched by the Chore Cow`);
         }
     },
 }

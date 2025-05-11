@@ -19,7 +19,7 @@ module.exports = {
             const childToDelete = await children.findById(childUser.id).exec();
             const childName = childToDelete.name;
             await children.deleteOne({ _id: childUser.id });
-            await interaction.reply(`:white_check_mark::cow2::white_check_mark: ${childName} will no longer be watched by the Chore Cow`);
+            await interaction.reply(`${childName} will no longer be watched by the Chore Cow`);
         }
     },
 }
