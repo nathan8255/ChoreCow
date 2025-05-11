@@ -1,0 +1,31 @@
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const childrenSchema = require('../schemas/children');
+const children = require('../schemas/children');
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('add_child')
+        .setDescription('Add a child for the Chore Cow to start watching')
+        .addUserOption(option => option.setName('user').setDescription('User of the new child').setRequired(true))
+        .addStringOption(option => option.setName('name').setDescription('Name of the new child').setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    async execute(interaction) {
+        const { options } = interaction;
+        const childUser = options.getUser('user');
+        const childName = options.getString('name');
+
+        const childExists = await children.exists({_id: childUser.id});
+        console.log(childExists);
+        if (childExists !== null) {
+            await interaction.reply(`:prohibited::cow2::prohibited: ${childName} is already being watched by the Chore Cow!`);
+        }
+        else {
+            await childrenSchema.create({
+                _id: childUser.id,
+                name: childName,
+                complete: false
+            });
+            await interaction.reply(`:white_check_mark::cow2::white_check_mark: ${childName} will now be watched by the Chore Cow`);
+        }
+    },
+}
