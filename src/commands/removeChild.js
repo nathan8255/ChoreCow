@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const children = require('../schemas/children')
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
         const childExists = await children.exists({_id: childUser.id});
         console.log(childExists);
         if (childExists === null) {
-            await interaction.reply(`:prohibited::cow2::prohibited: ${childUser.username} is not being watched by the Chore Cow!`);
+            await interaction.reply({content: `:prohibited::cow2::prohibited: ${childUser.username} is not being watched by the Chore Cow!`, flags: MessageFlags.Ephemeral});
         }
         else {
             const childToDelete = await children.findById(childUser.id).exec();

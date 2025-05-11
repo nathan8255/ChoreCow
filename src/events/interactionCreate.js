@@ -13,9 +13,6 @@ module.exports = {
         }
 
         try {
-            if (interaction.commandName === 'complete') {
-                await interaction.reply({ content: `${interaction.user.username}\'s chores set as complete :cow2:`, flags: MessageFlags.Ephemeral });
-            }
             await command.execute(interaction);
         } catch (error) {
             console.error(error);
