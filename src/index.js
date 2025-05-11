@@ -1,32 +1,41 @@
-import { config } from 'dotenv';
-config();
-import { Client, Routes, SlashCommandBuilder } from 'discord.js';
-import { REST } from '@discordjs/rest';
+const dotenv = require('dotenv');
+dotenv.config();
+
+const fs = require('node:fs');
+const path = require('node:path');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
 const TOKEN = process.env.BOT_TOKEN;
-const CLIENT_ID = process.env.CLIENT_ID;
-const GUILD_ID = '642854722402779146';
 
-const client = new Client({ intents: [] });
-const rest = new REST({ version: '10' }).setToken(TOKEN);
+const client = new Client({intents: [GatewayIntentBits.Guilds]});
 
-client.on('ready', () => console.log('The cow has awoken'));
+client.commands = new Collection();
 
-const commands = [
-    new SlashCommandBuilder().setName('complete')
-    .setDescription('Stop the cow from nudging you by marking your weekly chores as complete')
-    .toJSON(),
-];
-
-async function main() {
-  try {
-    await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
-      body: commands,
-    });
-    client.login(TOKEN);
-  } catch (err) {
-    console.log(err);
-  }
+//Get all commands
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	//Set a new item in the Collection with the key as the command name and the value as the exported module
+	if ('data' in command && 'execute' in command) {
+		client.commands.set(command.data.name, command);
+	} else {
+		console.log(`The command at ${filePath} is missing a "data" or "execute" property`);
+	}
 }
 
-main();
+//Get all events
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
+
+client.login(TOKEN);

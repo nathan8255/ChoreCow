@@ -3,7 +3,7 @@ const children = require('../schemas/children');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("check")
+        .setName('check')
         .setDescription('Check who the Chore Cow is currently nudging'),
     async execute(interaction) {
         const data = await children.find();
@@ -16,10 +16,10 @@ module.exports = {
             await data.forEach(async d => {
                 var completion;
                 if (d.complete) {
-                    completion = "Complete";
+                    completion = 'Complete';
                 }
                 else {
-                    completion = "Incomplete";
+                    completion = 'Incomplete';
                 }
                 values.push(d.name + ' | ' + completion);
             });
