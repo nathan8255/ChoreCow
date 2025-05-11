@@ -53,6 +53,7 @@ module.exports = {
                 //Thursday @ 3am
                 if (now.getDay() === 4 && now.getHours() === 15 && now.getMinutes() === 0) {
                     lastRun = new Date(now);
+                    await children.find().updateMany({complete: false}); //Set every completion status to false
                     messageChildren(client, ':wave::cow2: Chore period has begun! Check the chore chart if you haven\'t already');
                 }
                 //Friday @ 3pm
