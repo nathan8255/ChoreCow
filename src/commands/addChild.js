@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
-const childrenSchema = require('../schemas/children');
 const children = require('../schemas/children');
 
 module.exports = {
@@ -15,12 +14,11 @@ module.exports = {
         const childName = options.getString('name');
 
         const childExists = await children.exists({_id: childUser.id});
-        console.log(childExists);
         if (childExists !== null) {
             await interaction.reply({content: `:prohibited::cow2::prohibited: ${childName} is already being watched by the Chore Cow!`, flags: MessageFlags.Ephemeral});
         }
         else {
-            await childrenSchema.create({
+            await children.create({
                 _id: childUser.id,
                 name: childName,
                 complete: false

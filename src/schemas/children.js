@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 let children = new Schema({
-    _id: Number,
+    _id: String,
     name: String,
     complete: Boolean
 });

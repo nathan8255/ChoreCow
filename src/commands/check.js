@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const children = require('../schemas/children')
+const children = require('../schemas/children');
 
 module.exports = {
     data: new SlashCommandBuilder()

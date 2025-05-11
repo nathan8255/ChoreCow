@@ -15,7 +15,7 @@ module.exports = {
             }
             else {
                 await child.updateOne({complete: true});
-                await interaction.reply({ content: ':white_check_mark::cow2::white_check_mark: The Chore Cow takes note of' + 
+                await interaction.reply({ content: 'The Chore Cow takes note of' + 
                     ' your completion and will stop nudging you for the week :people_hugging::cow2:', flags: MessageFlags.Ephemeral});
             }
         }
