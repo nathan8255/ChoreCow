@@ -14,7 +14,7 @@ module.exports = {
         else {
             var values = [];
             await data.forEach(async d => {
-                values.push(d.name);
+                values.push(d.name + ' / ' + d.complete);
             });
             await interaction.reply(`${values.join('\n')}`);
         }
