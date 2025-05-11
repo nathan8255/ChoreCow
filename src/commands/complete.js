@@ -5,7 +5,7 @@ const CHANNEL_ID = process.env.CHANNEL_ID;
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("complete")
+        .setName('complete')
         .setDescription('Stop the Chore Cow from nudging you by marking your weekly chores as complete'),
     async execute(interaction) {
         const child = await children.findOne({_id: interaction.user.id});
