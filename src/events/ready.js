@@ -19,7 +19,8 @@ async function messageChildren(client, message) {
                 if (!child.complete && child._id) {
                     try {
                         const childUser = await client.users.fetch(child._id.toString());
-                        await childUser.send(message);
+                        const username = childUser.username;
+                        await childUser.send('@' + username + ' ' + message);
                         count++;
                     } catch (err) {
                         console.error(`Failed to notify user ${child.name}:`, err);
@@ -57,37 +58,39 @@ module.exports = {
         setInterval(async () => {
             const now = new Date();
 
-            if (lastRun?.getDate() !== now.getDate() && lastRun?.getHours() !== now.getHours() && lastRun?.getMinutes() !== now.getMinutes) {
-                //Thursday @ 3am
-                if (now.getDay() === 4 && now.getHours() === 15 && now.getMinutes() === 0) {
+            if (lastRun?.getDate() !== now.getDate()) {
+                //Thursday @ 3pm
+                if (now.getDay() === 4 && now.getHours() === 15) {
                     lastRun = new Date(now);
                     await children.find().updateMany({complete: false}); //Set every completion status to false
                     messageChildren(client, ':wave::cow2: Chore period has begun! Check the chore chart if you haven\'t already');
                 }
                 //Friday @ 3pm
-                else if (now.getDay() === 5 && now.getHours() === 15 && now.getMinutes() === 0) {
+                else if (now.getDay() === 5 && now.getHours() === 15) {
                     lastRun = new Date(now);
                     messageChildren(client, ':cow2: Your chores have not been completed yet');
                 }
-                //Saturday @ 8pm
-                else if (now.getDay() === 6 && now.getHours() === 8 && now.getMinutes() === 0) {
+                //Saturday @ 3pm
+                else if (now.getDay() === 6 && now.getHours() === 15) {
                     lastRun = new Date(now);
                     messageChildren(client, ':cow2: Your chores have not been completed yet');
                 }
-                //Sunday @ 8am
-                else if (now.getDay() === 0 && now.getHours() === 8 && now.getMinutes() === 0) {
-                    lastRun = new Date(now);
-                    messageChildren(client, ':bell::cow2: Today is the last day to complete your chores');
-                }
-                //Sunday @ 6pm
-                else if (now.getDay() === 0 && now.getHours() === 6 && now.getMinutes() === 0) {
-                    lastRun = new Date(now);
-                    messageChildren(client, ':rotating_light::cow2::rotating_light: You only have 6 hours left to complete your chores!');
-                }
-                //Sunday @ 11pm
-                else if (now.getDay() === 0 && now.getHours() === 11 && now.getMinutes() === 0) {
-                    lastRun = new Date(now);
-                    messageChildren(client, ':crossed_swords::cow2::crossed_swords: Final hour to complete your chores!!!');
+                if (lastRun?.getHours() !== now.getHours()) {
+                    //Sunday @ 3pm
+                    if (now.getDay() === 0 && now.getHours() === 15) {
+                        lastRun = new Date(now);
+                        messageChildren(client, ':bell::cow2: Today is the last day to complete your chores');
+                    }
+                    //Sunday @ 6pm
+                    else if (now.getDay() === 0 && now.getHours() === 18) {
+                        lastRun = new Date(now);
+                        messageChildren(client, ':rotating_light::cow2::rotating_light: You only have 6 hours left to complete your chores!');
+                    }
+                    //Sunday @ 11pm
+                    else if (now.getDay() === 0 && now.getHours() === 23) {
+                        lastRun = new Date(now);
+                        messageChildren(client, ':crossed_swords::cow2::crossed_swords: Final hour to complete your chores!!!');
+                    }
                 }
             }
         }, 60_000);
