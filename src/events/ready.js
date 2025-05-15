@@ -19,8 +19,7 @@ async function messageChildren(client, message) {
                 if (!child.complete && child._id) {
                     try {
                         const childUser = await client.users.fetch(child._id.toString());
-                        const username = childUser.username;
-                        await childUser.send('@' + username + ' ' + message);
+                        await childUser.send(`${childUser}` + message);
                         count++;
                     } catch (err) {
                         console.error(`Failed to notify user ${child.name}:`, err);
